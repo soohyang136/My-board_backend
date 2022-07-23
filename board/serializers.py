@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from .models import Board
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,3 +13,8 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+class BoardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Board
+        fields = ['id', 'title',  'content', 'author', 'created_at']
