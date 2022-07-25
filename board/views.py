@@ -1,6 +1,9 @@
+from datetime import datetime
+
+import pytz
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import UserSerializer, BoardSerializer
+from .serializers import UserSerializer, BoardSerializer, UserviewSerializer
 from rest_framework import status
 from django.contrib.auth import authenticate
 import jwt
@@ -39,12 +42,12 @@ def uesrview(request):
     token = request.GET['token']
     payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
     user = User.objects.get(id=payload['id'])
-    serializer = UserSerializer(user)
+    serializer = UserviewSerializer(user)
     print(serializer.data)
     return Response(serializer.data)
 
 @api_view(['GET'])
-def getBoard(request):
+def getBoards(request):
     board = Board.objects.all()
     boardlist = []
     for i in board:
@@ -53,3 +56,29 @@ def getBoard(request):
         boards = {'id': serializer.data['id'], 'title': serializer.data['title'], 'author': author.username, 'created_at': serializer.data['created_at']}
         boardlist.append(boards)
     return Response(boardlist)
+
+@api_view(['POST'])
+def registerBoard(request):
+    print(request.data)
+    form = request.data
+    now = pytz.timezone('Asia/Seoul')
+    now = datetime.now(now)
+    day = str(now)[:10]
+    time = str(now.time())[:8]
+    created = day + " " + time
+    form["created_at"] = created
+    print(form)
+    serializer = BoardSerializer(data=form)
+    if serializer.is_valid():
+        serializer.save()
+        return Response("등록성공")
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def getBoard(request):
+    board = Board.objects.get(id=request.GET['id'])
+    serializer = BoardSerializer(board)
+    author = User.objects.get(id=serializer.data['author'])
+    reboard = {'id': serializer.data['id'], 'title': serializer.data['title'], 'content': serializer.data['content'], 'author': author.username, 'created_at': serializer.data['created_at']}
+    return Response(reboard)
