@@ -8,4 +8,6 @@ urlpatterns = [
     path('getBoards/', views.getBoards, name='getBoards'),
     path('registerBoard/', views.registerBoard, name='registerBoard'),
     path('getBoard/', views.getBoard, name='getBoard'),
+    path('registerComment/', views.registerComment, name='registerComment'),
+    path('getComments/', views.getComments, name='getComments'),
 ]
