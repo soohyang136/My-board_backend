@@ -104,3 +104,10 @@ def getComments(request):
         re_Comment = {'id': serializer.data['id'], 'content': serializer.data['content'], 'author': author.username, 'created_at': serializer.data['created_at']}
         recomment.append(re_Comment)
     return Response(recomment)
+
+@api_view(['POST'])
+def deleteBoard(request):
+    boardId = request.data['id']
+    board = Board.objects.get(id=boardId)
+    board.delete()
+    return Response('삭제 성공');

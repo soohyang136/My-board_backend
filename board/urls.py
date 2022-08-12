@@ -10,4 +10,5 @@ urlpatterns = [
     path('getBoard/', views.getBoard, name='getBoard'),
     path('registerComment/', views.registerComment, name='registerComment'),
     path('getComments/', views.getComments, name='getComments'),
+    path('deleteBoard/', views.deleteBoard, name='deleteBoard'),
 ]
