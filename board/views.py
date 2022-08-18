@@ -111,3 +111,33 @@ def deleteBoard(request):
     board = Board.objects.get(id=boardId)
     board.delete()
     return Response('삭제 성공');
+
+@api_view(['POST'])
+def deleteComment(request):
+    commentId = request.data['id']
+    comment = Comment.objects.get(id=commentId)
+    comment.delete()
+    return Response('삭제 성공');
+
+@api_view(['GET'])
+def getComment(request):
+    comment = Comment.objects.get(id=request.GET['id'])
+    serializer = CommentSerializer(comment)
+    author = User.objects.get(id=serializer.data['author'])
+    send_Comment = {'id': serializer.data['id'], 'content': serializer.data['content'], 'author': author.username,
+                  'created_at': serializer.data['created_at']}
+    return Response(send_Comment);
+
+@api_view(['POST'])
+def modifyComment(requset):
+    comment = Comment.objects.get(id=requset.data['id'])
+    comment.content = requset.data['content']
+    comment.save()
+    return Response("변경 성공")
+
+@api_view(['POST'])
+def modifyBoard(requset):
+    board = Board.objects.get(id=requset.data['id'])
+    board.content = requset.data['content']
+    board.save()
+    return Response("변경 성공")
